@@ -229,7 +229,12 @@
 
                         <field name="category_id"/>
 
-                        <field name="priority"/>
+                        <field
+                            name="priority"
+                            widget="radio"
+                            options="{'horizontal': True}"
+                        />
+
 
                     </group>
 

@@ -13,19 +13,24 @@
     "depends": [
         "base",
         "mail",
-        #şu anlama geliyor: bizim modülümüz Odoo’nun temel modellerine ve altyapısına bağımlı. İleride mail.thread kullanınca buraya mail, çalışan modeli kullanmaya karar verirsek hr gibi bağımlılıklar ekleyebiliriz.
     ],
 
     "data": [
-    "security/it_request_security.xml",
-    "security/ir.model.access.csv",
-    "data/it_request_sequence.xml",
-    "data/it_request_activity_type.xml",
-    "views/it_request_views.xml",
-    "views/it_request_report_views.xml",
-    "views/it_request_dashboard_views.xml",
-    "views/it_request_category_views.xml",
+        "security/it_request_security.xml",
+        "security/ir.model.access.csv",
+        "data/it_request_sequence.xml",
+        "data/it_request_activity_type.xml",
+        "views/it_request_views.xml",
+        "views/it_request_report_views.xml",
+        "views/it_request_dashboard_views.xml",
+        "views/it_request_category_views.xml",
     ],
+
+    "assets": {
+        "web.assets_backend": [
+            "it_request_management/static/src/scss/it_request_dashboard.scss",
+        ],
+    },
 
     "installable": True,
     "application": True,

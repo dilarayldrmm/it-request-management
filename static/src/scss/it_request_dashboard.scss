@@ -1,0 +1,174 @@
+/* ========================================================= */
+/* IT REQUEST DASHBOARD */
+/* ========================================================= */
+
+.it_request_dashboard_sheet {
+    max-width: none !important;
+}
+
+
+/* KPI GRID */
+
+.it_request_dashboard_sheet .it_request_kpi_grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+    margin-bottom: 32px;
+}
+
+
+/* KPI CARDS */
+
+.it_request_dashboard_sheet .it_dash_btn {
+    float: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 95px;
+
+    border: 0 !important;
+    border-radius: 18px !important;
+
+    padding: 18px !important;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.it_request_dashboard_sheet .it_dash_btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.12);
+}
+
+
+/* STAT CONTENT */
+
+.it_request_dashboard_sheet .it_dash_btn .o_stat_info {
+    text-align: left !important;
+}
+
+
+.it_request_dashboard_sheet .it_dash_btn .o_stat_value {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+}
+
+
+.it_request_dashboard_sheet .it_dash_btn .o_stat_text {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+
+.it_request_dashboard_sheet .it_dash_btn i,
+.it_request_dashboard_sheet .it_dash_btn .o_stat_value,
+.it_request_dashboard_sheet .it_dash_btn .o_stat_text {
+    color: inherit !important;
+}
+
+
+/* TOTAL */
+
+.it_request_dashboard_sheet .it_dash_btn_total {
+    background: #eaf2ff !important;
+    color: #2563eb !important;
+}
+
+
+/* OPEN */
+
+.it_request_dashboard_sheet .it_dash_btn_open {
+    background: #e9f9ef !important;
+    color: #15803d !important;
+}
+
+
+/* CRITICAL */
+
+.it_request_dashboard_sheet .it_dash_btn_critical {
+    background: #feecec !important;
+    color: #dc2626 !important;
+}
+
+
+/* OVERDUE */
+
+.it_request_dashboard_sheet .it_dash_btn_overdue {
+    background: #fff3df !important;
+    color: #d97706 !important;
+}
+
+
+/* ========================================================= */
+/* PRIORITY SELECTION */
+/* ========================================================= */
+
+.o_selection_badge {
+    border-radius: 999px !important;
+
+    padding: 7px 14px !important;
+
+    margin-right: 7px !important;
+
+    font-weight: 600 !important;
+
+    border-width: 1px !important;
+}
+
+
+/* LOW */
+
+.o_selection_badge[value="low"],
+.o_selection_badge[data-value="low"] {
+    background-color: #f3f4f6 !important;
+    color: #4b5563 !important;
+}
+
+
+/* MEDIUM */
+
+.o_selection_badge[value="medium"],
+.o_selection_badge[data-value="medium"] {
+    background-color: #dbeafe !important;
+    color: #1d4ed8 !important;
+}
+
+
+/* HIGH */
+
+.o_selection_badge[value="high"],
+.o_selection_badge[data-value="high"] {
+    background-color: #fef3c7 !important;
+    color: #b45309 !important;
+}
+
+
+/* CRITICAL */
+
+.o_selection_badge[value="critical"],
+.o_selection_badge[data-value="critical"] {
+    background-color: #fee2e2 !important;
+    color: #b91c1c !important;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+    .it_request_dashboard_sheet .it_request_kpi_grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+@media (max-width: 600px) {
+    .it_request_dashboard_sheet .it_request_kpi_grid {
+        grid-template-columns: 1fr;
+    }
+}
