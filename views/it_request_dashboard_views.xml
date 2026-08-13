@@ -7,7 +7,10 @@
         <field name="name">it.request.dashboard.form</field>
         <field name="model">it.request.dashboard</field>
         <field name="arch" type="xml">
-            <form string="IT Request Dashboard" create="false" edit="false" delete="false">
+            <form string="IT Request Dashboard" create="false" edit="false" delete="false" readonly="1">
+                <style>
+                    .o_control_panel .breadcrumb-container { display: none !important; }
+                </style>
                 <sheet class="it_request_dashboard_sheet">
 
                     <div class="oe_title">
