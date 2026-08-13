@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- LIST VIEW -->
+    <record id="view_it_request_list" model="ir.ui.view">
+        <field name="name">it.request.list</field>
+        <field name="model">it.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="title"/>
+                <field name="requester_id"/>
+                <field name="assigned_to_id"/>
+                <field name="category_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="deadline"/>
+                <field name="is_overdue"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- FORM VIEW -->
+    <record id="view_it_request_form" model="ir.ui.view">
+        <field name="name">it.request.form</field>
+        <field name="model">it.request</field>
+        <field name="arch" type="xml">
+
+            <form string="IT Request">
+
+                <header>
+
+                    <button
+                        name="action_submit"
+                        string="Submit"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state != 'draft'"
+                    />
+
+                    <button
+                        name="action_start"
+                        string="Start Progress"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state != 'submitted'"
+                    />
+
+                    <button
+                        name="action_resolve"
+                        string="Resolve"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state != 'in_progress'"
+                    />
+
+                    <button
+                        name="action_close"
+                        string="Close"
+                        type="object"
+                        invisible="state != 'resolved'"
+                    />
+
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,submitted,in_progress,resolved,closed"
+                        readonly="1"
+                    />
+
+                </header>
+
+
+                <sheet>
+
+                    <!-- BASIC INFORMATION -->
+                    <group>
+                        <field name="reference"/>
+                        <field name="requester_id"/>
+                        <field name="assigned_to_id"/>
+                        <field name="title"/>
+                        <field name="category_id"/>
+                        <field name="priority"/>
+                    </group>
+
+
+                    <!-- DESCRIPTION -->
+                    <group>
+                        <field name="description"/>
+                    </group>
+
+
+                    <!-- RESOLUTION -->
+                    <group>
+                        <field
+                            name="resolution_note"
+                            invisible="state not in ['in_progress', 'resolved', 'closed']"
+                        />
+                    </group>
+
+
+                    <!-- SLA -->
+                    <group string="SLA">
+                        <field name="deadline" readonly="1"/>
+                        <field name="is_overdue" readonly="1"/>
+                    </group>
+
+
+                    <!-- WORKFLOW DATES -->
+                    <group string="Workflow Dates">
+                        <field name="submitted_at" readonly="1"/>
+                        <field name="started_at" readonly="1"/>
+                        <field name="resolved_at" readonly="1"/>
+                        <field name="closed_at" readonly="1"/>
+                    </group>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <!-- SEARCH VIEW -->
+    <record id="view_it_request_search" model="ir.ui.view">
+        <field name="name">it.request.search</field>
+        <field name="model">it.request</field>
+        <field name="arch" type="xml">
+
+            <search string="Search IT Requests">
+
+                <!-- SEARCHABLE FIELDS -->
+                <field name="reference"/>
+                <field name="title"/>
+                <field name="requester_id"/>
+                <field name="assigned_to_id"/>
+                <field name="category_id"/>
+
+                <separator/>
+
+
+                <!-- FILTERS -->
+                <filter
+                    name="filter_draft"
+                    string="Draft"
+                    domain="[('state', '=', 'draft')]"
+                />
+
+                <filter
+                    name="filter_in_progress"
+                    string="In Progress"
+                    domain="[('state', '=', 'in_progress')]"
+                />
+
+                <filter
+                    name="filter_critical"
+                    string="Critical"
+                    domain="[('priority', '=', 'critical')]"
+                />
+
+                <filter
+                    name="filter_overdue"
+                    string="Overdue"
+                    domain="[('is_overdue', '=', True)]"
+                />
+
+                <filter
+                    name="filter_my_requests"
+                    string="My Requests"
+                    domain="[('requester_id', '=', uid)]"
+                />
+
+
+                <!-- GROUP BY -->
+                <group expand="0" string="Group By">
+
+                    <filter
+                        name="group_by_state"
+                        string="Status"
+                        context="{'group_by': 'state'}"
+                    />
+
+                    <filter
+                        name="group_by_category"
+                        string="Category"
+                        context="{'group_by': 'category_id'}"
+                    />
+
+                    <filter
+                        name="group_by_assigned"
+                        string="Assigned To"
+                        context="{'group_by': 'assigned_to_id'}"
+                    />
+
+                </group>
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <!-- WINDOW ACTION -->
+    <record id="action_it_request" model="ir.actions.act_window">
+        <field name="name">IT Requests</field>
+        <field name="res_model">it.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_it_request_search"/>
+    </record>
+
+
+    <!-- MENUS -->
+    <menuitem
+        id="menu_it_management_root"
+        name="IT Management"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_it_request"
+        name="Requests"
+        parent="menu_it_management_root"
+        action="action_it_request"
+        sequence="10"
+    />
+
+</odoo>

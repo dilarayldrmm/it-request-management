@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <record id="seq_it_request" model="ir.sequence">
+        <field name="name">IT Request</field>
+        <field name="code">it.request</field>
+        <field name="prefix">IT-</field>
+        <field name="padding">5</field>
+    </record>
+</odoo>
