@@ -11,7 +11,9 @@
     "license": "LGPL-3",
 
     "depends": [
-        "base"#şu anlama geliyor: bizim modülümüz Odoo’nun temel modellerine ve altyapısına bağımlı. İleride mail.thread kullanınca buraya mail, çalışan modeli kullanmaya karar verirsek hr gibi bağımlılıklar ekleyebiliriz.
+        "base",
+        "mail",
+        #şu anlama geliyor: bizim modülümüz Odoo’nun temel modellerine ve altyapısına bağımlı. İleride mail.thread kullanınca buraya mail, çalışan modeli kullanmaya karar verirsek hr gibi bağımlılıklar ekleyebiliriz.
     ],
 
     "data": [

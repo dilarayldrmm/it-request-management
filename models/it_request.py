@@ -7,6 +7,7 @@ from odoo.exceptions import UserError
 class ITRequest(models.Model):
     _name = "it.request"
     _description = "IT Request"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
     # ---------------------------------------------------------
     # FIELDS
@@ -31,6 +32,7 @@ class ITRequest(models.Model):
     assigned_to_id = fields.Many2one(
         "res.users",
         string="Assigned To",
+        tracking=True,
     )
 
     title = fields.Char(
@@ -46,6 +48,7 @@ class ITRequest(models.Model):
         "it.request.category",
         string="Category",
         required=True,
+        tracking=True,
     )
 
     priority = fields.Selection(
@@ -58,6 +61,7 @@ class ITRequest(models.Model):
         string="Priority",
         default="medium",
         required=True,
+        tracking=True,
     )
 
     state = fields.Selection(
@@ -71,6 +75,7 @@ class ITRequest(models.Model):
         string="Status",
         default="draft",
         required=True,
+        tracking=True,
     )
 
     resolution_note = fields.Text(

@@ -118,6 +118,9 @@
 
                 </sheet>
 
+                <!-- CHATTER -->
+                <chatter/>
+
             </form>
 
         </field>
