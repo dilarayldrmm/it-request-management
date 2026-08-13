@@ -20,6 +20,7 @@
     "security/it_request_security.xml",
     "security/ir.model.access.csv",
     "data/it_request_sequence.xml",
+    "data/it_request_activity_type.xml",
     "views/it_request_views.xml",
     "views/it_request_category_views.xml",
     ],

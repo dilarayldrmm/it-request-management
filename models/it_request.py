@@ -116,7 +116,7 @@ class ITRequest(models.Model):
     )
 
     # ---------------------------------------------------------
-    # COMPUTED FIELDS
+    # SLA
     # ---------------------------------------------------------
 
     @api.depends("priority", "create_date")
@@ -130,12 +130,16 @@ class ITRequest(models.Model):
 
         for record in self:
             if record.create_date and record.priority:
-                hours = hours_by_priority.get(record.priority, 48)
+                hours = hours_by_priority.get(
+                    record.priority,
+                    48,
+                )
 
                 record.deadline = (
                     record.create_date
                     + timedelta(hours=hours)
                 )
+
             else:
                 record.deadline = False
 
@@ -147,7 +151,10 @@ class ITRequest(models.Model):
             record.is_overdue = bool(
                 record.deadline
                 and record.deadline < now
-                and record.state not in ("resolved", "closed")
+                and record.state not in (
+                    "resolved",
+                    "closed",
+                )
             )
 
     def _search_is_overdue(self, operator, value):
@@ -167,7 +174,11 @@ class ITRequest(models.Model):
             return [
                 ("deadline", "!=", False),
                 ("deadline", "<", now),
-                ("state", "not in", ["resolved", "closed"]),
+                (
+                    "state",
+                    "not in",
+                    ["resolved", "closed"],
+                ),
             ]
 
         return [
@@ -175,8 +186,84 @@ class ITRequest(models.Model):
             "|",
             ("deadline", "=", False),
             ("deadline", ">=", now),
-            ("state", "in", ["resolved", "closed"]),
+            (
+                "state",
+                "in",
+                ["resolved", "closed"],
+            ),
         ]
+
+    # ---------------------------------------------------------
+    # AUTOMATIC ASSIGNMENT ACTIVITY
+    # ---------------------------------------------------------
+
+    def _sync_assignment_activity(self):
+        activity_xmlid = (
+            "it_request_management."
+            "mail_activity_type_it_request_assignment"
+        )
+
+        for record in self:
+            record_sudo = record.sudo()
+
+            assignment_activities = (
+                record_sudo.activity_search(
+                    [activity_xmlid]
+                )
+            )
+
+            # Request artık kimseye atanmamışsa
+            # eski assignment activity'sini kaldır.
+            if not record_sudo.assigned_to_id:
+                if assignment_activities:
+                    assignment_activities.unlink()
+
+                continue
+
+            summary = (
+                f"{record_sudo.reference} - "
+                f"{record_sudo.title}"
+            )
+
+            note = (
+                "A new IT request has been assigned "
+                f"to you: {record_sudo.reference} - "
+                f"{record_sudo.title}"
+            )
+
+            # Daha önce oluşturulmuş assignment activity varsa
+            # yenisini oluşturmak yerine güncelle.
+            if assignment_activities:
+                assignment_activities.write(
+                    {
+                        "user_id": (
+                            record_sudo.assigned_to_id.id
+                        ),
+                        "summary": summary,
+                        "note": note,
+                        "date_deadline": (
+                            fields.Date.context_today(
+                                record_sudo
+                            )
+                        ),
+                    }
+                )
+
+            # İlk defa atanıyorsa yeni activity oluştur.
+            else:
+                record_sudo.activity_schedule(
+                    activity_xmlid,
+                    user_id=(
+                        record_sudo.assigned_to_id.id
+                    ),
+                    summary=summary,
+                    note=note,
+                    date_deadline=(
+                        fields.Date.context_today(
+                            record_sudo
+                        )
+                    ),
+                )
 
     # ---------------------------------------------------------
     # CREATE
@@ -187,13 +274,33 @@ class ITRequest(models.Model):
         for vals in vals_list:
             if vals.get("reference", "New") == "New":
                 vals["reference"] = (
-                    self.env["ir.sequence"].next_by_code(
-                        "it.request"
-                    )
+                    self.env["ir.sequence"]
+                    .next_by_code("it.request")
                     or "New"
                 )
 
-        return super().create(vals_list)
+        records = super().create(vals_list)
+
+        assigned_records = records.filtered(
+            "assigned_to_id"
+        )
+
+        if assigned_records:
+            assigned_records._sync_assignment_activity()
+
+        return records
+
+    # ---------------------------------------------------------
+    # WRITE
+    # ---------------------------------------------------------
+
+    def write(self, vals):
+        result = super().write(vals)
+
+        if "assigned_to_id" in vals:
+            self._sync_assignment_activity()
+
+        return result
 
     # ---------------------------------------------------------
     # WORKFLOW ACTIONS
@@ -210,7 +317,8 @@ class ITRequest(models.Model):
     def action_start(self):
         if not self.assigned_to_id:
             raise UserError(
-                "Please assign the request to someone before starting."
+                "Please assign the request to someone "
+                "before starting."
             )
 
         self.write(
@@ -223,7 +331,8 @@ class ITRequest(models.Model):
     def action_resolve(self):
         if not self.resolution_note:
             raise UserError(
-                "Please enter a resolution note before resolving the request."
+                "Please enter a resolution note "
+                "before resolving the request."
             )
 
         self.write(
@@ -231,6 +340,14 @@ class ITRequest(models.Model):
                 "state": "resolved",
                 "resolved_at": fields.Datetime.now(),
             }
+        )
+
+        self.sudo().activity_feedback(
+            [
+                "it_request_management."
+                "mail_activity_type_it_request_assignment"
+            ],
+            feedback="IT request resolved.",
         )
 
     def action_close(self):

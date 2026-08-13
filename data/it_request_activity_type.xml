@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <record
+        id="mail_activity_type_it_request_assignment"
+        model="mail.activity.type"
+    >
+        <field name="name">IT Request Assignment</field>
+        <field name="summary">New IT Request Assigned</field>
+        <field name="res_model">it.request</field>
+        <field name="icon">fa-tasks</field>
+    </record>
+
+</odoo>
