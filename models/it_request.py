@@ -76,6 +76,7 @@ class ITRequest(models.Model):
         default="draft",
         required=True,
         tracking=True,
+        group_expand=True,
     )
 
     resolution_note = fields.Text(
@@ -130,8 +131,10 @@ class ITRequest(models.Model):
         for record in self:
             if record.create_date and record.priority:
                 hours = hours_by_priority.get(record.priority, 48)
+
                 record.deadline = (
-                    record.create_date + timedelta(hours=hours)
+                    record.create_date
+                    + timedelta(hours=hours)
                 )
             else:
                 record.deadline = False
@@ -184,7 +187,9 @@ class ITRequest(models.Model):
         for vals in vals_list:
             if vals.get("reference", "New") == "New":
                 vals["reference"] = (
-                    self.env["ir.sequence"].next_by_code("it.request")
+                    self.env["ir.sequence"].next_by_code(
+                        "it.request"
+                    )
                     or "New"
                 )
 

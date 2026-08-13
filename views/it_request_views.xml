@@ -2,34 +2,172 @@
 
 <odoo>
 
+    <!-- ===================================================== -->
     <!-- LIST VIEW -->
+    <!-- ===================================================== -->
+
     <record id="view_it_request_list" model="ir.ui.view">
         <field name="name">it.request.list</field>
         <field name="model">it.request</field>
+
         <field name="arch" type="xml">
-            <list>
+
+            <list decoration-danger="is_overdue">
+
                 <field name="reference"/>
+
                 <field name="title"/>
+
                 <field name="requester_id"/>
+
                 <field name="assigned_to_id"/>
+
                 <field name="category_id"/>
-                <field name="priority"/>
+
+                <field
+                    name="priority"
+                    widget="badge"
+                    decoration-danger="priority == 'critical'"
+                    decoration-warning="priority == 'high'"
+                    decoration-info="priority == 'medium'"
+                    decoration-muted="priority == 'low'"
+                />
+
                 <field name="state"/>
+
                 <field name="deadline"/>
+
                 <field name="is_overdue"/>
+
             </list>
+
         </field>
     </record>
 
 
-    <!-- FORM VIEW -->
-    <record id="view_it_request_form" model="ir.ui.view">
-        <field name="name">it.request.form</field>
+    <!-- ===================================================== -->
+    <!-- KANBAN VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_request_kanban" model="ir.ui.view">
+
+        <field name="name">it.request.kanban</field>
+
         <field name="model">it.request</field>
+
+        <field name="arch" type="xml">
+
+            <kanban
+                default_group_by="state"
+                records_draggable="false"
+                groups_draggable="false"
+            >
+
+                <!-- Fields used by Kanban -->
+                <field name="reference"/>
+                <field name="title"/>
+                <field name="category_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="assigned_to_id"/>
+                <field name="deadline"/>
+                <field name="is_overdue"/>
+
+
+                <templates>
+
+                    <t t-name="card">
+
+                        <div>
+
+                            <!-- REQUEST NUMBER -->
+                            <div class="mb-2">
+                                <strong>
+                                    <field name="reference"/>
+                                </strong>
+                            </div>
+
+
+                            <!-- TITLE -->
+                            <div class="mb-2">
+                                <field name="title"/>
+                            </div>
+
+
+                            <!-- CATEGORY -->
+                            <div>
+                                <strong>Category:</strong>
+                                <field name="category_id"/>
+                            </div>
+
+
+                            <!-- PRIORITY -->
+                            <div>
+                                <strong>Priority:</strong>
+
+                                <field
+                                    name="priority"
+                                    widget="badge"
+                                    decoration-danger="priority == 'critical'"
+                                    decoration-warning="priority == 'high'"
+                                    decoration-info="priority == 'medium'"
+                                    decoration-muted="priority == 'low'"
+                                />
+
+                            </div>
+
+
+                            <!-- ASSIGNED USER -->
+                            <div>
+                                <strong>Assigned To:</strong>
+                                <field name="assigned_to_id"/>
+                            </div>
+
+
+                            <!-- DEADLINE -->
+                            <div>
+                                <strong>Deadline:</strong>
+                                <field name="deadline"/>
+                            </div>
+
+
+                            <!-- OVERDUE WARNING -->
+                            <t t-if="record.is_overdue.raw_value">
+
+                                <div class="text-danger fw-bold mt-2">
+                                    ⚠ OVERDUE
+                                </div>
+
+                            </t>
+
+                        </div>
+
+                    </t>
+
+                </templates>
+
+            </kanban>
+
+        </field>
+
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- FORM VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_request_form" model="ir.ui.view">
+
+        <field name="name">it.request.form</field>
+
+        <field name="model">it.request</field>
+
         <field name="arch" type="xml">
 
             <form string="IT Request">
 
+                <!-- HEADER -->
                 <header>
 
                     <button
@@ -63,6 +201,8 @@
                         invisible="state != 'resolved'"
                     />
 
+
+                    <!-- STATUS BAR -->
                     <field
                         name="state"
                         widget="statusbar"
@@ -76,76 +216,141 @@
                 <sheet>
 
                     <!-- BASIC INFORMATION -->
-                    <group>
+
+                    <group string="Request Information">
+
                         <field name="reference"/>
+
                         <field name="requester_id"/>
+
                         <field name="assigned_to_id"/>
+
                         <field name="title"/>
+
                         <field name="category_id"/>
-                        <field name="priority"/>
+
+                        <field
+                            name="priority"
+                            widget="badge"
+                            decoration-danger="priority == 'critical'"
+                            decoration-warning="priority == 'high'"
+                            decoration-info="priority == 'medium'"
+                            decoration-muted="priority == 'low'"
+                        />
+
                     </group>
 
 
                     <!-- DESCRIPTION -->
-                    <group>
+
+                    <group string="Description">
+
                         <field name="description"/>
+
                     </group>
 
 
                     <!-- RESOLUTION -->
-                    <group>
-                        <field
-                            name="resolution_note"
-                            invisible="state not in ['in_progress', 'resolved', 'closed']"
-                        />
+
+                    <group
+                        string="Resolution"
+                        invisible="state not in ['in_progress', 'resolved', 'closed']"
+                    >
+
+                        <field name="resolution_note"/>
+
                     </group>
 
 
                     <!-- SLA -->
+
                     <group string="SLA">
-                        <field name="deadline" readonly="1"/>
-                        <field name="is_overdue" readonly="1"/>
+
+                        <field
+                            name="deadline"
+                            readonly="1"
+                        />
+
+                        <field
+                            name="is_overdue"
+                            readonly="1"
+                        />
+
                     </group>
 
 
                     <!-- WORKFLOW DATES -->
+
                     <group string="Workflow Dates">
-                        <field name="submitted_at" readonly="1"/>
-                        <field name="started_at" readonly="1"/>
-                        <field name="resolved_at" readonly="1"/>
-                        <field name="closed_at" readonly="1"/>
+
+                        <field
+                            name="submitted_at"
+                            readonly="1"
+                        />
+
+                        <field
+                            name="started_at"
+                            readonly="1"
+                        />
+
+                        <field
+                            name="resolved_at"
+                            readonly="1"
+                        />
+
+                        <field
+                            name="closed_at"
+                            readonly="1"
+                        />
+
                     </group>
 
                 </sheet>
 
+
                 <!-- CHATTER -->
+
                 <chatter/>
 
             </form>
 
         </field>
+
     </record>
 
 
+    <!-- ===================================================== -->
     <!-- SEARCH VIEW -->
+    <!-- ===================================================== -->
+
     <record id="view_it_request_search" model="ir.ui.view">
+
         <field name="name">it.request.search</field>
+
         <field name="model">it.request</field>
+
         <field name="arch" type="xml">
 
             <search string="Search IT Requests">
 
                 <!-- SEARCHABLE FIELDS -->
+
                 <field name="reference"/>
+
                 <field name="title"/>
+
                 <field name="requester_id"/>
+
                 <field name="assigned_to_id"/>
+
                 <field name="category_id"/>
+
 
                 <separator/>
 
 
                 <!-- FILTERS -->
+
                 <filter
                     name="filter_draft"
                     string="Draft"
@@ -153,10 +358,32 @@
                 />
 
                 <filter
+                    name="filter_submitted"
+                    string="Submitted"
+                    domain="[('state', '=', 'submitted')]"
+                />
+
+                <filter
                     name="filter_in_progress"
                     string="In Progress"
                     domain="[('state', '=', 'in_progress')]"
                 />
+
+                <filter
+                    name="filter_resolved"
+                    string="Resolved"
+                    domain="[('state', '=', 'resolved')]"
+                />
+
+                <filter
+                    name="filter_closed"
+                    string="Closed"
+                    domain="[('state', '=', 'closed')]"
+                />
+
+
+                <separator/>
+
 
                 <filter
                     name="filter_critical"
@@ -178,6 +405,7 @@
 
 
                 <!-- GROUP BY -->
+
                 <group expand="0" string="Group By">
 
                     <filter
@@ -193,6 +421,12 @@
                     />
 
                     <filter
+                        name="group_by_priority"
+                        string="Priority"
+                        context="{'group_by': 'priority'}"
+                    />
+
+                    <filter
                         name="group_by_assigned"
                         string="Assigned To"
                         context="{'group_by': 'assigned_to_id'}"
@@ -203,24 +437,40 @@
             </search>
 
         </field>
+
     </record>
 
 
+    <!-- ===================================================== -->
     <!-- WINDOW ACTION -->
+    <!-- ===================================================== -->
+
     <record id="action_it_request" model="ir.actions.act_window">
+
         <field name="name">IT Requests</field>
+
         <field name="res_model">it.request</field>
-        <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_it_request_search"/>
+
+        <field name="view_mode">kanban,list,form</field>
+
+        <field
+            name="search_view_id"
+            ref="view_it_request_search"
+        />
+
     </record>
 
 
+    <!-- ===================================================== -->
     <!-- MENUS -->
+    <!-- ===================================================== -->
+
     <menuitem
         id="menu_it_management_root"
         name="IT Management"
         sequence="10"
     />
+
 
     <menuitem
         id="menu_it_request"
