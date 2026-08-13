@@ -3,3 +3,4 @@ access_it_request_user,it.request user,model_it_request,it_request_management.gr
 access_it_request_manager,it.request manager,model_it_request,it_request_management.group_it_request_manager,1,1,1,1
 access_it_request_category_user,it.request.category user,model_it_request_category,it_request_management.group_it_request_user,1,0,0,0
 access_it_request_category_manager,it.request.category manager,model_it_request_category,it_request_management.group_it_request_manager,1,1,1,1
+access_it_request_dashboard_manager,it.request.dashboard manager,model_it_request_dashboard,it_request_management.group_it_request_manager,1,0,0,0

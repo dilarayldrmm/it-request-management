@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- DASHBOARD FORM VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_request_dashboard_form" model="ir.ui.view">
+
+        <field name="name">it.request.dashboard.form</field>
+
+        <field name="model">it.request.dashboard</field>
+
+        <field name="arch" type="xml">
+
+            <form
+                string="IT Request Dashboard"
+                create="false"
+                edit="false"
+                delete="false"
+            >
+
+                <sheet>
+
+                    <!-- TITLE -->
+
+                    <div class="oe_title">
+
+                        <h1>
+                            IT Request Dashboard
+                        </h1>
+
+                        <p class="text-muted">
+                            Overview of IT support requests
+                            and current workload.
+                        </p>
+
+                    </div>
+
+
+                    <!-- KPI SMART BUTTONS -->
+
+                    <div
+                        class="oe_button_box"
+                        name="button_box"
+                    >
+
+                        <!-- TOTAL REQUESTS -->
+
+                        <button
+                            name="action_view_all_requests"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-list"
+                        >
+
+                            <field
+                                name="total_requests"
+                                widget="statinfo"
+                                string="Total Requests"
+                            />
+
+                        </button>
+
+
+                        <!-- OPEN REQUESTS -->
+
+                        <button
+                            name="action_view_open_requests"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-folder-open"
+                        >
+
+                            <field
+                                name="open_requests"
+                                widget="statinfo"
+                                string="Open Requests"
+                            />
+
+                        </button>
+
+
+                        <!-- CRITICAL REQUESTS -->
+
+                        <button
+                            name="action_view_critical_requests"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-exclamation-triangle"
+                        >
+
+                            <field
+                                name="critical_requests"
+                                widget="statinfo"
+                                string="Critical Requests"
+                            />
+
+                        </button>
+
+
+                        <!-- OVERDUE REQUESTS -->
+
+                        <button
+                            name="action_view_overdue_requests"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-clock-o"
+                        >
+
+                            <field
+                                name="overdue_requests"
+                                widget="statinfo"
+                                string="Overdue Requests"
+                            />
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- INFORMATION AREA -->
+
+                    <separator string="Request Overview"/>
+
+
+                    <group>
+
+                        <group string="Current Workload">
+
+                            <field
+                                name="open_requests"
+                                readonly="1"
+                            />
+
+                            <field
+                                name="critical_requests"
+                                readonly="1"
+                            />
+
+                        </group>
+
+
+                        <group string="Monitoring">
+
+                            <field
+                                name="total_requests"
+                                readonly="1"
+                            />
+
+                            <field
+                                name="overdue_requests"
+                                readonly="1"
+                            />
+
+                        </group>
+
+                    </group>
+
+
+                    <separator string="Quick Access"/>
+
+                    <div class="text-muted">
+                        Click the statistic buttons above
+                        to open the corresponding IT requests.
+                    </div>
+
+                </sheet>
+
+            </form>
+
+        </field>
+
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- SINGLE DASHBOARD RECORD -->
+    <!-- ===================================================== -->
+
+    <record
+        id="it_request_dashboard_main"
+        model="it.request.dashboard"
+    />
+
+
+    <!-- ===================================================== -->
+    <!-- DASHBOARD ACTION -->
+    <!-- ===================================================== -->
+
+    <record
+        id="action_it_request_dashboard"
+        model="ir.actions.act_window"
+    >
+
+        <field name="name">Dashboard</field>
+
+        <field name="res_model">it.request.dashboard</field>
+
+        <field name="view_mode">form</field>
+
+        <field
+            name="res_id"
+            ref="it_request_dashboard_main"
+        />
+
+        <field
+            name="view_id"
+            ref="view_it_request_dashboard_form"
+        />
+
+        <field name="target">current</field>
+
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- DASHBOARD MENU -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_it_request_dashboard"
+        name="Dashboard"
+        parent="menu_it_management_root"
+        action="action_it_request_dashboard"
+        sequence="5"
+        groups="it_request_management.group_it_request_manager"
+    />
+
+</odoo>

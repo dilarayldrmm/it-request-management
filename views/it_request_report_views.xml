@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- GRAPH VIEW -->
+    <record id="view_it_request_graph" model="ir.ui.view">
+        <field name="name">it.request.graph</field>
+        <field name="model">it.request</field>
+        <field name="arch" type="xml">
+            <graph string="IT Request Analysis" type="bar">
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+
+    <!-- PIVOT VIEW -->
+    <record id="view_it_request_pivot" model="ir.ui.view">
+        <field name="name">it.request.pivot</field>
+        <field name="model">it.request</field>
+        <field name="arch" type="xml">
+            <pivot string="IT Request Analysis">
+
+                <field
+                    name="state"
+                    type="row"
+                />
+
+                <field
+                    name="priority"
+                    type="col"
+                />
+
+            </pivot>
+        </field>
+    </record>
+
+
+    <!-- REPORTING ACTION -->
+    <record id="action_it_request_report" model="ir.actions.act_window">
+        <field name="name">IT Request Analysis</field>
+        <field name="res_model">it.request</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_it_request_search"/>
+    </record>
+
+
+    <!-- REPORTING MENU -->
+    <menuitem
+        id="menu_it_request_reporting"
+        name="Reporting"
+        parent="menu_it_management_root"
+        action="action_it_request_report"
+        sequence="20"
+        groups="it_request_management.group_it_request_manager"
+    />
+
+</odoo>

@@ -22,6 +22,8 @@
     "data/it_request_sequence.xml",
     "data/it_request_activity_type.xml",
     "views/it_request_views.xml",
+    "views/it_request_report_views.xml",
+    "views/it_request_dashboard_views.xml",
     "views/it_request_category_views.xml",
     ],
 
