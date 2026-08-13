@@ -229,14 +229,7 @@
 
                         <field name="category_id"/>
 
-                        <field
-                            name="priority"
-                            widget="badge"
-                            decoration-danger="priority == 'critical'"
-                            decoration-warning="priority == 'high'"
-                            decoration-info="priority == 'medium'"
-                            decoration-muted="priority == 'low'"
-                        />
+                        <field name="priority"/>
 
                     </group>
 
