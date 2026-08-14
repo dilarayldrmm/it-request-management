@@ -24,6 +24,8 @@
 
                 <field name="category_id"/>
 
+                <field name="equipment_id"/>
+
                 <field
                     name="priority"
                     widget="badge"
@@ -229,6 +231,8 @@
 
                         <field name="category_id"/>
 
+                        <field name="equipment_id"/>
+
                         <field
                             name="priority"
                             widget="radio"
@@ -342,6 +346,8 @@
                 <field name="assigned_to_id"/>
 
                 <field name="category_id"/>
+
+                <field name="equipment_id"/>
 
 
                 <separator/>

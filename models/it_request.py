@@ -51,6 +51,11 @@ class ITRequest(models.Model):
         tracking=True,
     )
 
+    equipment_id = fields.Many2one(
+       "it.equipment",
+        string="Related Equipment",
+    )
+
     priority = fields.Selection(
         [
             ("low", "Low"),

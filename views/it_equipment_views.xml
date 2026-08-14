@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- EQUIPMENT LIST VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_equipment_list" model="ir.ui.view">
+        <field name="name">it.equipment.list</field>
+        <field name="model">it.equipment</field>
+
+        <field name="arch" type="xml">
+
+            <list>
+
+                <field name="name"/>
+
+                <field name="serial_number"/>
+
+                <field name="equipment_type"/>
+
+                <field name="assigned_to_id"/>
+
+                <field
+                    name="status"
+                    widget="badge"
+                    decoration-success="status == 'available'"
+                    decoration-info="status == 'assigned'"
+                    decoration-warning="status == 'maintenance'"
+                    decoration-muted="status == 'retired'"
+                />
+
+                <field name="purchase_date"/>
+
+                <field name="warranty_end_date"/>
+
+            </list>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- EQUIPMENT FORM VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_equipment_form" model="ir.ui.view">
+        <field name="name">it.equipment.form</field>
+        <field name="model">it.equipment</field>
+
+        <field name="arch" type="xml">
+
+            <form string="IT Equipment">
+
+                <sheet>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_view_requests"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-ticket"
+                        >
+                            <field
+                                name="request_count"
+                                widget="statinfo"
+                                string="Requests"
+                            />
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+
+                        <label for="name"/>
+
+                        <h1>
+                            <field
+                                name="name"
+                                placeholder="e.g. Dell Latitude 5550"
+                            />
+                        </h1>
+
+                    </div>
+
+
+                    <group>
+
+                        <!-- BASIC INFORMATION -->
+
+                        <group string="Equipment Information">
+
+                            <field name="serial_number"/>
+
+                            <field name="equipment_type"/>
+
+                            <field name="status"/>
+
+                            <field name="active"/>
+
+                        </group>
+
+
+                        <!-- ASSIGNMENT -->
+
+                        <group string="Assignment">
+
+                            <field name="assigned_to_id"/>
+
+                            <field name="purchase_date"/>
+
+                            <field name="warranty_end_date"/>
+
+                        </group>
+
+                    </group>
+
+
+                    <!-- NOTES -->
+
+                    <group string="Notes">
+
+                        <field
+                            name="note"
+                            placeholder="Additional information about this equipment..."
+                        />
+
+                    </group>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- SEARCH VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_equipment_search" model="ir.ui.view">
+        <field name="name">it.equipment.search</field>
+        <field name="model">it.equipment</field>
+
+        <field name="arch" type="xml">
+
+            <search string="Search Equipment">
+
+                <field name="name"/>
+
+                <field name="serial_number"/>
+
+                <field name="assigned_to_id"/>
+
+
+                <separator/>
+
+
+                <filter
+                    name="filter_available"
+                    string="Available"
+                    domain="[('status', '=', 'available')]"
+                />
+
+                <filter
+                    name="filter_assigned"
+                    string="Assigned"
+                    domain="[('status', '=', 'assigned')]"
+                />
+
+                <filter
+                    name="filter_maintenance"
+                    string="Maintenance"
+                    domain="[('status', '=', 'maintenance')]"
+                />
+
+                <filter
+                    name="filter_retired"
+                    string="Retired"
+                    domain="[('status', '=', 'retired')]"
+                />
+
+
+                <group expand="0" string="Group By">
+
+                    <filter
+                        name="group_by_type"
+                        string="Equipment Type"
+                        context="{'group_by': 'equipment_type'}"
+                    />
+
+                    <filter
+                        name="group_by_status"
+                        string="Status"
+                        context="{'group_by': 'status'}"
+                    />
+
+                    <filter
+                        name="group_by_assigned"
+                        string="Assigned To"
+                        context="{'group_by': 'assigned_to_id'}"
+                    />
+
+                </group>
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- EQUIPMENT ACTION -->
+    <!-- ===================================================== -->
+
+    <record id="action_it_equipment" model="ir.actions.act_window">
+
+        <field name="name">Equipment</field>
+
+        <field name="res_model">it.equipment</field>
+
+        <field name="view_mode">list,form</field>
+
+        <field
+            name="search_view_id"
+            ref="view_it_equipment_search"
+        />
+
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- EQUIPMENT MENU -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_it_equipment"
+        name="Equipment"
+        parent="menu_it_management_root"
+        action="action_it_equipment"
+        sequence="15"
+    />
+
+</odoo>
