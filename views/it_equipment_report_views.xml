@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- EQUIPMENT GRAPH VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_equipment_graph" model="ir.ui.view">
+        <field name="name">it.equipment.graph</field>
+        <field name="model">it.equipment</field>
+
+        <field name="arch" type="xml">
+
+            <graph
+                string="Equipment Analysis"
+                type="bar"
+            >
+
+                <field name="status"/>
+
+                <field name="equipment_type"/>
+
+            </graph>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- EQUIPMENT PIVOT VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_equipment_pivot" model="ir.ui.view">
+        <field name="name">it.equipment.pivot</field>
+        <field name="model">it.equipment</field>
+
+        <field name="arch" type="xml">
+
+            <pivot string="Equipment Analysis">
+
+                <field
+                    name="equipment_type"
+                    type="row"
+                />
+
+                <field
+                    name="status"
+                    type="col"
+                />
+
+            </pivot>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- EQUIPMENT REPORT ACTION -->
+    <!-- ===================================================== -->
+
+    <record id="action_it_equipment_report" model="ir.actions.act_window">
+        <field name="name">Equipment Reporting</field>
+        <field name="res_model">it.equipment</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- REPORTING MENU -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_it_equipment_report"
+        name="Equipment Reporting"
+        parent="menu_it_management_root"
+        action="action_it_equipment_report"
+        sequence="25"
+        groups="it_request_management.group_it_request_manager"
+    />
+
+</odoo>

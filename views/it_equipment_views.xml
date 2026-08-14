@@ -35,6 +35,27 @@
 
                 <field name="warranty_end_date"/>
 
+                <field
+                    name="warranty_status"
+                    widget="badge"
+                    decoration-success="warranty_status == 'under_warranty'"
+                    decoration-warning="warranty_status == 'expiring_soon'"
+                    decoration-danger="warranty_status == 'expired'"
+                    decoration-muted="warranty_status == 'no_warranty'"
+                />
+
+                <field name="next_maintenance_date" optional="show"/>
+
+                <field
+                    name="maintenance_plan_status"
+                    widget="badge"
+                    decoration-danger="maintenance_plan_status == 'overdue'"
+                    decoration-warning="maintenance_plan_status == 'due_soon'"
+                    decoration-info="maintenance_plan_status == 'planned'"
+                    decoration-muted="maintenance_plan_status == 'no_schedule'"
+                    optional="show"
+                />
+
             </list>
 
         </field>
@@ -66,6 +87,32 @@
                                 name="request_count"
                                 widget="statinfo"
                                 string="Requests"
+                            />
+                        </button>
+
+                        <button
+                            name="action_view_maintenances"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-wrench"
+                        >
+                            <field
+                                name="maintenance_count"
+                                widget="statinfo"
+                                string="Maintenances"
+                            />
+                        </button>
+
+                        <button
+                            name="action_view_assignments"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-history"
+                        >
+                            <field
+                                name="assignment_count"
+                                widget="statinfo"
+                                string="Assignments"
                             />
                         </button>
                     </div>
@@ -110,6 +157,29 @@
                             <field name="purchase_date"/>
 
                             <field name="warranty_end_date"/>
+
+                            <field
+                                name="warranty_status"
+                                widget="badge"
+                                readonly="1"
+                            />
+
+                            <field
+                                name="warranty_days_left"
+                                readonly="1"
+                                invisible="warranty_status == 'no_warranty'"
+                            />
+
+                            <field
+                                name="next_maintenance_date"
+                                readonly="1"
+                            />
+
+                            <field
+                                name="maintenance_plan_status"
+                                widget="badge"
+                                readonly="1"
+                            />
 
                         </group>
 
@@ -179,6 +249,32 @@
                     name="filter_retired"
                     string="Retired"
                     domain="[('status', '=', 'retired')]"
+                />
+
+                <separator/>
+
+                <filter
+                    name="filter_under_warranty"
+                    string="Under Warranty"
+                    domain="[('warranty_status', '=', 'under_warranty')]"
+                />
+
+                <filter
+                    name="filter_warranty_expiring"
+                    string="Warranty Expiring Soon"
+                    domain="[('warranty_status', '=', 'expiring_soon')]"
+                />
+
+                <filter
+                    name="filter_warranty_expired"
+                    string="Warranty Expired"
+                    domain="[('warranty_status', '=', 'expired')]"
+                />
+
+                <filter
+                    name="filter_no_warranty"
+                    string="No Warranty"
+                    domain="[('warranty_status', '=', 'no_warranty')]"
                 />
 
 

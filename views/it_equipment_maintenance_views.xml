@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- MAINTENANCE LIST VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_equipment_maintenance_list" model="ir.ui.view">
+        <field name="name">it.equipment.maintenance.list</field>
+        <field name="model">it.equipment.maintenance</field>
+
+        <field name="arch" type="xml">
+
+            <list>
+
+                <field name="maintenance_date"/>
+
+                <field name="equipment_id"/>
+
+                <field name="request_id"/>
+
+                <field name="technician_id"/>
+
+                <field
+                    name="status"
+                    widget="badge"
+                    decoration-info="status == 'scheduled'"
+                    decoration-warning="status == 'in_progress'"
+                    decoration-success="status == 'completed'"
+                    decoration-muted="status == 'cancelled'"
+                />
+
+                <field
+                    name="planning_status"
+                    widget="badge"
+                    decoration-danger="planning_status == 'overdue'"
+                    decoration-warning="planning_status == 'due_soon'"
+                    decoration-info="planning_status == 'planned'"
+                    decoration-muted="planning_status == 'not_scheduled'"
+                />
+
+                <field name="days_until_maintenance" optional="hide"/>
+
+                <field name="cost"/>
+
+            </list>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- MAINTENANCE FORM VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_equipment_maintenance_form" model="ir.ui.view">
+        <field name="name">it.equipment.maintenance.form</field>
+        <field name="model">it.equipment.maintenance</field>
+
+        <field name="arch" type="xml">
+
+            <form string="Equipment Maintenance">
+
+                <header>
+                    <button
+                        name="action_start_maintenance"
+                        string="Start Maintenance"
+                        type="object"
+                        class="btn-primary"
+                        invisible="status != 'scheduled'"
+                    />
+                    <button
+                        name="action_complete_maintenance"
+                        string="Complete"
+                        type="object"
+                        class="btn-primary"
+                        invisible="status != 'in_progress'"
+                    />
+                    <button
+                        name="action_cancel_maintenance"
+                        string="Cancel"
+                        type="object"
+                        invisible="status not in ['scheduled', 'in_progress']"
+                    />
+                    <field
+                        name="status"
+                        widget="statusbar"
+                        statusbar_visible="scheduled,in_progress,completed,cancelled"
+                        readonly="1"
+                    />
+                </header>
+
+                <sheet>
+
+                    <div class="oe_title">
+
+                        <h1>
+                            Equipment Maintenance
+                        </h1>
+
+                    </div>
+
+
+                    <group>
+
+                        <group string="Maintenance Information">
+
+                            <field name="equipment_id"/>
+
+                            <field name="request_id"/>
+
+                            <field name="maintenance_date"/>
+
+                            <field
+                                name="planning_status"
+                                widget="badge"
+                                readonly="1"
+                            />
+
+                            <field
+                                name="days_until_maintenance"
+                                readonly="1"
+                                invisible="status != 'scheduled'"
+                            />
+
+                            <field name="technician_id"/>
+
+                        </group>
+
+
+                        <group string="Cost Information">
+
+                            <field name="cost"/>
+
+                        </group>
+
+                    </group>
+
+
+                    <group string="Issue">
+
+                        <field
+                            name="issue_description"
+                            placeholder="Describe the equipment problem..."
+                        />
+
+                    </group>
+
+
+                    <group string="Action Taken">
+
+                        <field
+                            name="action_taken"
+                            placeholder="Describe the maintenance or repair performed..."
+                        />
+
+                    </group>
+
+
+                    <group string="Notes">
+
+                        <field
+                            name="note"
+                            placeholder="Additional maintenance notes..."
+                        />
+
+                    </group>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- MAINTENANCE SEARCH VIEW -->
+    <!-- ===================================================== -->
+
+    <record id="view_it_equipment_maintenance_search" model="ir.ui.view">
+        <field name="name">it.equipment.maintenance.search</field>
+        <field name="model">it.equipment.maintenance</field>
+
+        <field name="arch" type="xml">
+
+            <search string="Search Maintenances">
+
+                <field name="equipment_id"/>
+
+                <field name="request_id"/>
+
+                <field name="technician_id"/>
+
+                <field name="maintenance_date"/>
+
+
+                <separator/>
+
+
+                <filter
+                    name="filter_scheduled"
+                    string="Scheduled"
+                    domain="[('status', '=', 'scheduled')]"
+                />
+
+                <filter
+                    name="filter_in_progress"
+                    string="In Progress"
+                    domain="[('status', '=', 'in_progress')]"
+                />
+
+                <filter
+                    name="filter_completed"
+                    string="Completed"
+                    domain="[('status', '=', 'completed')]"
+                />
+
+                <filter
+                    name="filter_cancelled"
+                    string="Cancelled"
+                    domain="[('status', '=', 'cancelled')]"
+                />
+
+                <separator/>
+
+                <filter
+                    name="filter_planning_overdue"
+                    string="Overdue"
+                    domain="[('planning_status', '=', 'overdue')]"
+                />
+
+                <filter
+                    name="filter_planning_due_soon"
+                    string="Due Soon"
+                    domain="[('planning_status', '=', 'due_soon')]"
+                />
+
+                <filter
+                    name="filter_planning_planned"
+                    string="Planned"
+                    domain="[('planning_status', '=', 'planned')]"
+                />
+
+                <group expand="0" string="Group By">
+
+                    <filter
+                        name="group_by_equipment"
+                        string="Equipment"
+                        context="{'group_by': 'equipment_id'}"
+                    />
+
+                    <filter
+                        name="group_by_status"
+                        string="Status"
+                        context="{'group_by': 'status'}"
+                    />
+
+                    <filter
+                        name="group_by_technician"
+                        string="Technician"
+                        context="{'group_by': 'technician_id'}"
+                    />
+
+                </group>
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- MAINTENANCE ACTION -->
+    <!-- ===================================================== -->
+
+    <record id="action_it_equipment_maintenance" model="ir.actions.act_window">
+
+        <field name="name">Maintenances</field>
+
+        <field name="res_model">it.equipment.maintenance</field>
+
+        <field name="view_mode">list,form</field>
+
+        <field
+            name="search_view_id"
+            ref="view_it_equipment_maintenance_search"
+        />
+
+    </record>
+
+
+    <!-- ===================================================== -->
+    <!-- MAINTENANCE MENU -->
+    <!-- ===================================================== -->
+
+    <menuitem
+        id="menu_it_equipment_maintenance"
+        name="Maintenances"
+        parent="menu_it_management_root"
+        action="action_it_equipment_maintenance"
+        sequence="16"
+        groups="it_request_management.group_it_request_user"
+    />
+
+</odoo>

@@ -9,9 +9,7 @@ class ITRequest(models.Model):
     _description = "IT Request"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
-    # ---------------------------------------------------------
-    # FIELDS
-    # ---------------------------------------------------------
+   
 
     reference = fields.Char(
         string="Request No",
@@ -54,6 +52,17 @@ class ITRequest(models.Model):
     equipment_id = fields.Many2one(
        "it.equipment",
         string="Related Equipment",
+    )
+
+    maintenance_ids = fields.One2many(
+        "it.equipment.maintenance",
+        "request_id",
+        string="Maintenances",
+    )
+
+    maintenance_count = fields.Integer(
+        string="Maintenance Count",
+        compute="_compute_maintenance_count",
     )
 
     priority = fields.Selection(
@@ -120,9 +129,7 @@ class ITRequest(models.Model):
         search="_search_is_overdue",
     )
 
-    # ---------------------------------------------------------
-    # SLA
-    # ---------------------------------------------------------
+   
 
     @api.depends("priority", "create_date")
     def _compute_deadline(self):
@@ -147,6 +154,13 @@ class ITRequest(models.Model):
 
             else:
                 record.deadline = False
+
+    @api.depends("maintenance_ids")
+    def _compute_maintenance_count(self):
+        for record in self:
+            record.maintenance_count = len(
+                record.maintenance_ids
+            )
 
     @api.depends("deadline", "state")
     def _compute_is_overdue(self):
@@ -198,9 +212,56 @@ class ITRequest(models.Model):
             ),
         ]
 
-    # ---------------------------------------------------------
-    # AUTOMATIC ASSIGNMENT ACTIVITY
-    # ---------------------------------------------------------
+    def action_create_maintenance(self):
+        self.ensure_one()
+
+        if not self.equipment_id:
+            raise UserError(
+                "Please select related equipment before creating maintenance."
+            )
+
+        issue_description = self.title
+        if self.description:
+            issue_description = (
+                f"{self.title}\n\n{self.description}"
+            )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Create Maintenance",
+            "res_model": "it.equipment.maintenance",
+            "view_mode": "form",
+            "target": "current",
+            "context": {
+                "default_equipment_id": self.equipment_id.id,
+                "default_request_id": self.id,
+                "default_issue_description": issue_description,
+            },
+        }
+
+    def action_view_maintenances(self):
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": f"Maintenances - {self.reference}",
+            "res_model": "it.equipment.maintenance",
+            "view_mode": "list,form",
+            "domain": [
+                ("request_id", "=", self.id),
+            ],
+            "context": {
+                "default_request_id": self.id,
+                "default_equipment_id": (
+                    self.equipment_id.id
+                    if self.equipment_id
+                    else False
+                ),
+            },
+            "target": "current",
+        }
+
+   
 
     def _sync_assignment_activity(self):
         activity_xmlid = (
@@ -270,10 +331,7 @@ class ITRequest(models.Model):
                     ),
                 )
 
-    # ---------------------------------------------------------
-    # CREATE
-    # ---------------------------------------------------------
-
+    
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -295,9 +353,7 @@ class ITRequest(models.Model):
 
         return records
 
-    # ---------------------------------------------------------
-    # WRITE
-    # ---------------------------------------------------------
+   
 
     def write(self, vals):
         result = super().write(vals)
@@ -307,10 +363,7 @@ class ITRequest(models.Model):
 
         return result
 
-    # ---------------------------------------------------------
-    # WORKFLOW ACTIONS
-    # ---------------------------------------------------------
-
+  
     def action_submit(self):
         self.write(
             {

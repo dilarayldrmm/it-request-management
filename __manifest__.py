@@ -15,24 +15,24 @@
         "mail",
     ],
 
-    "data": [
+  "data": [
     "security/it_request_security.xml",
     "security/ir.model.access.csv",
+
     "data/it_request_sequence.xml",
     "data/it_request_activity_type.xml",
+
     "views/it_request_views.xml",
     "views/it_request_report_views.xml",
     "views/it_request_dashboard_views.xml",
+
     "views/it_equipment_views.xml",
+    "views/it_equipment_maintenance_views.xml",
+    "views/it_equipment_assignment_views.xml",
+    "views/it_equipment_report_views.xml",
+
     "views/it_request_category_views.xml",
-    ],
-
-    "assets": {
-        "web.assets_backend": [
-            "it_request_management/static/src/scss/it_request_dashboard.scss",
-        ],
-    },
-
+],
     "installable": True,
     "application": True,
 }

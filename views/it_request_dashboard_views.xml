@@ -2,30 +2,39 @@
 
 <odoo>
 
+    <!-- ===================================================== -->
     <!-- DASHBOARD FORM VIEW -->
+    <!-- ===================================================== -->
+
     <record id="view_it_request_dashboard_form" model="ir.ui.view">
+
         <field name="name">it.request.dashboard.form</field>
+
         <field name="model">it.request.dashboard</field>
+
         <field name="arch" type="xml">
-            <form string="IT Request Dashboard" create="false" edit="false" delete="false" readonly="1">
-                <style>
-                    .o_control_panel .breadcrumb-container { display: none !important; }
-                </style>
-                <sheet class="it_request_dashboard_sheet">
 
-                    <div class="oe_title">
-                        <h1>IT Request Dashboard</h1>
-                        <p class="text-muted">
-                            Overview of IT support requests and current workload
-                        </p>
-                    </div>
+            <form
+                string="IT Management Dashboard"
+                create="false"
+                edit="false"
+                delete="false"
+            >
 
-                    <div class="it_request_kpi_grid">
+                <sheet>
+
+                    <!-- ================================================= -->
+                    <!-- STANDARD ODOO SMART BUTTONS -->
+                    <!-- ================================================= -->
+
+                    <div class="oe_button_box" name="button_box">
+
+                        <!-- REQUEST KPI -->
 
                         <button
                             name="action_view_all_requests"
                             type="object"
-                            class="oe_stat_button it_dash_btn it_dash_btn_total"
+                            class="oe_stat_button"
                             icon="fa-list"
                         >
                             <field
@@ -35,10 +44,11 @@
                             />
                         </button>
 
+
                         <button
                             name="action_view_open_requests"
                             type="object"
-                            class="oe_stat_button it_dash_btn it_dash_btn_open"
+                            class="oe_stat_button"
                             icon="fa-folder-open"
                         >
                             <field
@@ -48,10 +58,11 @@
                             />
                         </button>
 
+
                         <button
                             name="action_view_critical_requests"
                             type="object"
-                            class="oe_stat_button it_dash_btn it_dash_btn_critical"
+                            class="oe_stat_button"
                             icon="fa-exclamation-triangle"
                         >
                             <field
@@ -61,10 +72,11 @@
                             />
                         </button>
 
+
                         <button
                             name="action_view_overdue_requests"
                             type="object"
-                            class="oe_stat_button it_dash_btn it_dash_btn_overdue"
+                            class="oe_stat_button"
                             icon="fa-clock-o"
                         >
                             <field
@@ -74,27 +86,212 @@
                             />
                         </button>
 
+
+                        <!-- EQUIPMENT KPI -->
+
+                        <button
+                            name="action_view_all_equipment"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-desktop"
+                        >
+                            <field
+                                name="total_equipment"
+                                widget="statinfo"
+                                string="Total Equipment"
+                            />
+                        </button>
+
+
+                        <button
+                            name="action_view_available_equipment"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-check-circle"
+                        >
+                            <field
+                                name="available_equipment"
+                                widget="statinfo"
+                                string="Available"
+                            />
+                        </button>
+
+
+                        <button
+                            name="action_view_assigned_equipment"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-user"
+                        >
+                            <field
+                                name="assigned_equipment"
+                                widget="statinfo"
+                                string="Assigned"
+                            />
+                        </button>
+
+
+                        <button
+                            name="action_view_maintenance_equipment"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-wrench"
+                        >
+                            <field
+                                name="maintenance_equipment"
+                                widget="statinfo"
+                                string="Maintenance"
+                            />
+                        </button>
+
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- DASHBOARD TITLE -->
+                    <!-- ================================================= -->
+
+                    <div class="oe_title">
+
+                        <h1>
+                            IT Management Dashboard
+                        </h1>
+
+                        <p class="text-muted">
+                            Overview of IT requests and equipment operations
+                        </p>
+
+                    </div>
+
+
+                    <!-- ================================================= -->
+                    <!-- REQUEST SUMMARY -->
+                    <!-- ================================================= -->
+
+                    <group string="Request Overview">
+
+                        <group>
+
+                            <field
+                                name="total_requests"
+                                readonly="1"
+                            />
+
+                            <field
+                                name="open_requests"
+                                readonly="1"
+                            />
+
+                        </group>
+
+
+                        <group>
+
+                            <field
+                                name="critical_requests"
+                                readonly="1"
+                            />
+
+                            <field
+                                name="overdue_requests"
+                                readonly="1"
+                            />
+
+                        </group>
+
+                    </group>
+
+
+                    <!-- ================================================= -->
+                    <!-- EQUIPMENT SUMMARY -->
+                    <!-- ================================================= -->
+
+                    <group string="Equipment Overview">
+
+                        <group>
+
+                            <field
+                                name="total_equipment"
+                                readonly="1"
+                            />
+
+                            <field
+                                name="available_equipment"
+                                readonly="1"
+                            />
+
+                        </group>
+
+
+                        <group>
+
+                            <field
+                                name="assigned_equipment"
+                                readonly="1"
+                            />
+
+                            <field
+                                name="maintenance_equipment"
+                                readonly="1"
+                            />
+
+                        </group>
+
+                    </group>
+
                 </sheet>
+
             </form>
+
         </field>
+
     </record>
 
-    <!-- SINGLE DASHBOARD RECORD -->
-    <record id="it_request_dashboard_main" model="it.request.dashboard"/>
 
+    <!-- ===================================================== -->
+    <!-- DASHBOARD RECORD -->
+    <!-- ===================================================== -->
+
+    <record
+        id="it_request_dashboard_main"
+        model="it.request.dashboard"
+    />
+
+
+    <!-- ===================================================== -->
     <!-- DASHBOARD ACTION -->
-    <record id="action_it_request_dashboard" model="ir.actions.act_window">
+    <!-- ===================================================== -->
+
+    <record
+        id="action_it_request_dashboard"
+        model="ir.actions.act_window"
+    >
+
         <field name="name">Dashboard</field>
+
         <field name="res_model">it.request.dashboard</field>
+
         <field name="view_mode">form</field>
-        <field name="res_id" ref="it_request_dashboard_main"/>
-        <field name="view_id" ref="view_it_request_dashboard_form"/>
-        <field name="target">current</field>
+
+        <field
+            name="res_id"
+            ref="it_request_dashboard_main"
+        />
+
+        <field
+            name="view_id"
+            ref="view_it_request_dashboard_form"
+        />
+
+        <field name="target" eval="'current'"/>
+
     </record>
 
+
+    <!-- ===================================================== -->
     <!-- DASHBOARD MENU -->
+    <!-- ===================================================== -->
+
     <menuitem
         id="menu_it_request_dashboard"
         name="Dashboard"

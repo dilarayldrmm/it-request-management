@@ -5,6 +5,10 @@ class ITRequestDashboard(models.Model):
     _name = "it.request.dashboard"
     _description = "IT Request Dashboard"
 
+    # ---------------------------------------------------------
+    # REQUEST KPI FIELDS
+    # ---------------------------------------------------------
+
     total_requests = fields.Integer(
         string="Total Requests",
         compute="_compute_dashboard_counts",
@@ -25,13 +29,44 @@ class ITRequestDashboard(models.Model):
         compute="_compute_dashboard_counts",
     )
 
+    # ---------------------------------------------------------
+    # EQUIPMENT KPI FIELDS
+    # ---------------------------------------------------------
+
+    total_equipment = fields.Integer(
+        string="Total Equipment",
+        compute="_compute_dashboard_counts",
+    )
+
+    available_equipment = fields.Integer(
+        string="Available Equipment",
+        compute="_compute_dashboard_counts",
+    )
+
+    assigned_equipment = fields.Integer(
+        string="Assigned Equipment",
+        compute="_compute_dashboard_counts",
+    )
+
+    maintenance_equipment = fields.Integer(
+        string="Maintenance Equipment",
+        compute="_compute_dashboard_counts",
+    )
+
+    # ---------------------------------------------------------
+    # KPI COMPUTATION
+    # ---------------------------------------------------------
+
     @api.depends()
     def _compute_dashboard_counts(self):
         request_model = self.env["it.request"]
+        equipment_model = self.env["it.equipment"]
 
-        total = request_model.search_count([])
+        # REQUEST COUNTS
 
-        open_count = request_model.search_count(
+        total_requests = request_model.search_count([])
+
+        open_requests = request_model.search_count(
             [
                 (
                     "state",
@@ -41,7 +76,7 @@ class ITRequestDashboard(models.Model):
             ]
         )
 
-        critical_count = request_model.search_count(
+        critical_requests = request_model.search_count(
             [
                 ("priority", "=", "critical"),
                 (
@@ -52,20 +87,47 @@ class ITRequestDashboard(models.Model):
             ]
         )
 
-        overdue_count = request_model.search_count(
+        overdue_requests = request_model.search_count(
             [
                 ("is_overdue", "=", True),
             ]
         )
 
+        # EQUIPMENT COUNTS
+
+        total_equipment = equipment_model.search_count([])
+
+        available_equipment = equipment_model.search_count(
+            [
+                ("status", "=", "available"),
+            ]
+        )
+
+        assigned_equipment = equipment_model.search_count(
+            [
+                ("status", "=", "assigned"),
+            ]
+        )
+
+        maintenance_equipment = equipment_model.search_count(
+            [
+                ("status", "=", "maintenance"),
+            ]
+        )
+
         for record in self:
-            record.total_requests = total
-            record.open_requests = open_count
-            record.critical_requests = critical_count
-            record.overdue_requests = overdue_count
+            record.total_requests = total_requests
+            record.open_requests = open_requests
+            record.critical_requests = critical_requests
+            record.overdue_requests = overdue_requests
+
+            record.total_equipment = total_equipment
+            record.available_equipment = available_equipment
+            record.assigned_equipment = assigned_equipment
+            record.maintenance_equipment = maintenance_equipment
 
     # ---------------------------------------------------------
-    # DASHBOARD ACTIONS
+    # GENERIC REQUEST ACTION
     # ---------------------------------------------------------
 
     def _get_request_action(self, name, domain):
@@ -79,6 +141,10 @@ class ITRequestDashboard(models.Model):
             "domain": domain,
             "target": "current",
         }
+
+    # ---------------------------------------------------------
+    # REQUEST ACTIONS
+    # ---------------------------------------------------------
 
     def action_view_all_requests(self):
         return self._get_request_action(
@@ -116,5 +182,55 @@ class ITRequestDashboard(models.Model):
             "Overdue IT Requests",
             [
                 ("is_overdue", "=", True),
+            ],
+        )
+
+    # ---------------------------------------------------------
+    # GENERIC EQUIPMENT ACTION
+    # ---------------------------------------------------------
+
+    def _get_equipment_action(self, name, domain):
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": name,
+            "res_model": "it.equipment",
+            "view_mode": "list,form",
+            "domain": domain,
+            "target": "current",
+        }
+
+    # ---------------------------------------------------------
+    # EQUIPMENT ACTIONS
+    # ---------------------------------------------------------
+
+    def action_view_all_equipment(self):
+        return self._get_equipment_action(
+            "All Equipment",
+            [],
+        )
+
+    def action_view_available_equipment(self):
+        return self._get_equipment_action(
+            "Available Equipment",
+            [
+                ("status", "=", "available"),
+            ],
+        )
+
+    def action_view_assigned_equipment(self):
+        return self._get_equipment_action(
+            "Assigned Equipment",
+            [
+                ("status", "=", "assigned"),
+            ],
+        )
+
+    def action_view_maintenance_equipment(self):
+        return self._get_equipment_action(
+            "Equipment in Maintenance",
+            [
+                ("status", "=", "maintenance"),
             ],
         )

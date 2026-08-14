@@ -203,6 +203,15 @@
                         invisible="state != 'resolved'"
                     />
 
+                    <button
+                        name="action_create_maintenance"
+                        string="Create Maintenance"
+                        type="object"
+                        class="btn-secondary"
+                        groups="it_request_management.group_it_request_manager"
+                        invisible="not equipment_id"
+                    />
+
 
                     <!-- STATUS BAR -->
                     <field
@@ -216,6 +225,22 @@
 
 
                 <sheet>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_view_maintenances"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-wrench"
+                            invisible="maintenance_count == 0"
+                        >
+                            <field
+                                name="maintenance_count"
+                                widget="statinfo"
+                                string="Maintenances"
+                            />
+                        </button>
+                    </div>
 
                     <!-- BASIC INFORMATION -->
 
